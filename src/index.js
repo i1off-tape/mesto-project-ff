@@ -96,7 +96,7 @@ document.querySelectorAll(".popup").forEach((popup) => {
   popup.addEventListener("mousedown", handleOverlayClick);
 });
 
-// @todo: Вывести карточки на страницу
+// @todo: Вывести карточки из массива на страницу
 
 initialCards.forEach((item) => {
   const cardElement = createCard(
