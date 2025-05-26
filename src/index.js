@@ -1,3 +1,6 @@
+import './pages/index.css'; // добавьте импорт главного файла стилей 
+import { initialCards } from './scripts/cards.js' // импортируем массив с карточками
+
 // @todo: Темплейт карточки
 
 //прописан в функции createCard
