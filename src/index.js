@@ -1,7 +1,12 @@
 // @todo: Импорты
 
 import "./pages/index.css"; // добавьте импорт главного файла стилей
-import { initialCards, createCard, deleteCard } from "./scripts/cards.js"; // импортируем массив с карточками
+import {
+  initialCards,
+  createCard,
+  deleteCard,
+  handleLikeClick,
+} from "./scripts/cards.js"; // импортируем массив с карточками
 import { openModal, closeModal, handleOverlayClick } from "./scripts/modal.js"; // импортируем функции открытия и закрытия попапов
 
 // @todo: Dom-элементы попапов, список карточек, формы
@@ -42,7 +47,8 @@ editButton.addEventListener("click", () => {
 });
 
 // @todo: функции формы, лайка и вызовы
-function handleFormSubmit(event) {
+
+function handleProfileFormSubmit(event) {
   event.preventDefault(); // предотвращаем перезагрузку страницы
 
   profileTitle.textContent = nameInput.value;
@@ -69,10 +75,6 @@ function handleAddCardSubmit(event) {
   addCardForm.reset();
 }
 
-function handleLikeClick(likeButton) {
-  likeButton.classList.toggle("card__like-button_is-active");
-}
-
 function handleImageClick(name, link) {
   popupImageContent.src = link;
   popupImageContent.alt = name; // устанавливаем alt для изображения
@@ -80,7 +82,7 @@ function handleImageClick(name, link) {
   openModal(popupImage);
 }
 
-formElement.addEventListener("submit", handleFormSubmit);
+formElement.addEventListener("submit", handleProfileFormSubmit);
 addCardForm.addEventListener("submit", handleAddCardSubmit);
 
 // Закртие попапов по клику на оверлей и кнопки закрытия

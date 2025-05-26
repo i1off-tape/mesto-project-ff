@@ -63,4 +63,10 @@ function deleteCard(cardElement) {
   cardElement.remove();
 }
 
-export { initialCards, createCard, deleteCard };
+// @todo: Функция обработки клика по лайку
+
+function handleLikeClick(likeButton) {
+  likeButton.classList.toggle("card__like-button_is-active");
+}
+
+export { initialCards, createCard, deleteCard, handleLikeClick };
