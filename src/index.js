@@ -1,55 +1,110 @@
-import './pages/index.css'; // добавьте импорт главного файла стилей 
-import { initialCards } from './scripts/cards.js' // импортируем массив с карточками
+// @todo: Импорты
 
-// @todo: Темплейт карточки
+import "./pages/index.css"; // добавьте импорт главного файла стилей
+import { initialCards, createCard, deleteCard } from "./scripts/cards.js"; // импортируем массив с карточками
+import { openModal, closeModal, handleOverlayClick } from "./scripts/modal.js"; // импортируем функции открытия и закрытия попапов
 
-//прописан в функции createCard
+// @todo: Dom-элементы попапов, список карточек, формы
 
-// @todo: DOM узлы
-const addButton = document.querySelector('.profile__add-button')
-const addCardPopup = document.querySelector('.popup_type_new-card')
-const cardPopupButton = document.querySelector('.popup__button')
-const closeButtonPopup = addCardPopup.querySelector('.popup__close')
-const cardAllList = document.querySelector('.places__list')
+const popupEdit = document.querySelector(".popup_type_edit");
+const popupAddCard = document.querySelector(".popup_type_new-card");
+const popupImage = document.querySelector(".popup_type_image");
+const popupImageContent = popupImage.querySelector(".popup__image");
+const popupImageTitle = popupImage.querySelector(".popup__caption");
 
-addButton.addEventListener('click', () => {
-	addCardPopup.classList.add('popup_is-opened')
-})
+const editButton = document.querySelector(".profile__edit-button");
+const addButton = document.querySelector(".profile__add-button");
 
-closeButtonPopup.addEventListener('click', () => {
-	addCardPopup.classList.remove('popup_is-opened')
-})
+const formElement = document.forms["edit-profile"];
+const jobInput = formElement.elements["description"];
+const nameInput = formElement.elements["name"];
 
-// @todo: Функция создания карточки
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
 
-function createCard(name, link, deleteCard) {
-	const cardTemplate = document.querySelector('#card-template').content
-	const cardElement = cardTemplate.querySelector('.card').cloneNode(true)
+const addCardForm = document.forms["new-place"];
+const cardNameInput = addCardForm.elements["place-name"];
+const cardLinkInput = addCardForm.elements["link"];
 
-	const cardName = cardElement.querySelector('.card__title')
-	const cardImage = cardElement.querySelector('.card__image')
-	const cardDeleteButton = cardElement.querySelector('.card__delete-button')
+const cardAllList = document.querySelector(".places__list");
 
-	cardName.textContent = name
-	cardImage.src = link
-	cardImage.alt = name // Дублируем название в alt
+// @todo: открытие и закрытие попапов
 
-	cardDeleteButton.addEventListener('click', () => {
-		deleteCard(cardElement)
-	})
+addButton.addEventListener("click", () => {
+  openModal(popupAddCard);
+});
 
-	return cardElement
+editButton.addEventListener("click", () => {
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
+
+  openModal(popupEdit);
+});
+
+// @todo: функции формы, лайка и вызовы
+function handleFormSubmit(event) {
+  event.preventDefault(); // предотвращаем перезагрузку страницы
+
+  profileTitle.textContent = nameInput.value;
+  profileDescription.textContent = jobInput.value;
+
+  closeModal(popupEdit);
 }
 
-// @todo: Функция удаления карточки
+function handleAddCardSubmit(event) {
+  event.preventDefault(); // предотвращаем перезагрузку страницы
 
-function deleteCard(cardElement) {
-	cardElement.remove()
+  const cardElement = createCard(
+    cardNameInput.value,
+    cardLinkInput.value,
+    deleteCard,
+    handleLikeClick,
+    handleImageClick
+  );
+  cardAllList.prepend(cardElement); // добавляем новую карточку в начало списка
+
+  closeModal(popupAddCard);
+
+  // Очищаем поля ввода после добавления карточки
+  addCardForm.reset();
 }
+
+function handleLikeClick(likeButton) {
+  likeButton.classList.toggle("card__like-button_is-active");
+}
+
+function handleImageClick(name, link) {
+  popupImageContent.src = link;
+  popupImageContent.alt = name; // устанавливаем alt для изображения
+  popupImageTitle.textContent = name;
+  openModal(popupImage);
+}
+
+formElement.addEventListener("submit", handleFormSubmit);
+addCardForm.addEventListener("submit", handleAddCardSubmit);
+
+// Закртие попапов по клику на оверлей и кнопки закрытия
+
+document.querySelectorAll(".popup").forEach((popup) => {
+  const closeBtn = popup.querySelector(".popup__close");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      closeModal(popup);
+    });
+  }
+
+  popup.addEventListener("mousedown", handleOverlayClick);
+});
 
 // @todo: Вывести карточки на страницу
 
-initialCards.forEach(item => {
-	const cardElement = createCard(item.name, item.link, deleteCard)
-	cardAllList.append(cardElement)
-})
+initialCards.forEach((item) => {
+  const cardElement = createCard(
+    item.name,
+    item.link,
+    deleteCard,
+    handleLikeClick,
+    handleImageClick
+  );
+  cardAllList.append(cardElement);
+});
