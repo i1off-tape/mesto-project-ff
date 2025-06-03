@@ -1,4 +1,4 @@
-// @todo: Функция создания карточки
+// @todo: Функция создания карточки c API
 
 import { config } from "./api.js";
 
@@ -45,7 +45,7 @@ function createCard(
   return cardElement;
 }
 
-// @todo: Функция удаления карточки
+// @todo: Функция удаления карточки c API
 
 function deleteCard(cardElement, cardId) {
   fetch(`${config.baseUrl}/cards/${cardId}`, {
@@ -68,7 +68,7 @@ function deleteCard(cardElement, cardId) {
     });
 }
 
-// @todo: Функция обработки клика по лайку
+// @todo: Функция обработки клика по лайку с API
 
 function handleLikeClick(cardData, likeButton, likeCountElement) {
   const isLiked = likeButton.classList.contains("card__like-button_is-active");

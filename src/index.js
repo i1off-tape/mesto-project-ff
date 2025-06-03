@@ -12,7 +12,7 @@ import {
   updateAvatar,
 } from "./scripts/api.js"; // импортируем функции для работы с API
 
-// @todo: Dom-элементы попапов, список карточек, формы
+// @todo: Dom-элементы попапов, список карточек, формы, конфигурация валидации и переменные
 
 let currentUserId;
 
@@ -57,30 +57,34 @@ const configValidation = {
 
 addButton.addEventListener("click", () => {
   clearValidation(addCardForm, configValidation); // очищаем ошибки валидации перед открытием попапа
-  addCardForm.reset();
-  openModal(popupAddCard);
+  addCardForm.reset(); // сбрасываем форму
+  openModal(popupAddCard); // открываем попап редактирования по клику
 });
 
 editButton.addEventListener("click", () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
 
-  clearValidation(formElement, configValidation); // очищаем ошибки валидации перед открытием попапа
+  clearValidation(formElement, configValidation);
   openModal(popupEdit);
 });
 
 profileAvatar.addEventListener("click", () => {
-  clearValidation(formAvatar, configValidation); // очищаем ошибки валидации перед открытием попапа
+  clearValidation(formAvatar, configValidation);
   formAvatar.reset();
-  openModal(popupAvatar); // открываем попап редактирования профиля по клику на аватар
+  openModal(popupAvatar); /
 });
 
-// @todo: функции формы, лайка и вызовы
+// @todo: функции формы, лайки, вызовы, загрузка и обработка данных
 
+
+// Функция для отображения индикатора загрузки на кнопке
 function renderLoading(isLoading, buttonElement, defaultText = "Сохранить") {
   buttonElement.textContent = isLoading ? "Сохранение..." : defaultText;
 }
 
+
+//функция для обработки отправки формы редактирования профиля
 function handleProfileFormSubmit(event) {
   event.preventDefault(); // предотвращаем перезагрузку страницы
 
@@ -92,7 +96,7 @@ function handleProfileFormSubmit(event) {
   setUserInfo(name, about)
     .then((updatedUser) => {
       profileTitle.textContent = updatedUser.name; // обновляем имя пользователя
-      profileDescription.textContent = updatedUser.about; // обновляем описание пользователя
+      profileDescription.textContent = updatedUser.about;
       closeModal(popupEdit); // закрываем попап редактирования профиля
     })
     .catch((error) => {
@@ -103,6 +107,7 @@ function handleProfileFormSubmit(event) {
     });
 }
 
+// Функция для обработки отправки формы добавления новой карточки
 function handleAddCardSubmit(event) {
   event.preventDefault(); // предотвращаем перезагрузку страницы
 
@@ -124,16 +129,17 @@ function handleAddCardSubmit(event) {
       );
       cardAllList.prepend(cardElement); // добавляем новую карточку в начало списка
       addCardForm.reset();
-      closeModal(popupAddCard); // закрываем попап добавления карточки
+      closeModal(popupAddCard);
     })
     .catch((error) => {
       console.error("Ошибка при добавлении карточки:", error);
     })
     .finally(() => {
-      renderLoading(false, saveAddCardButton); // скрываем индикатор загрузки
+      renderLoading(false, saveAddCardButton);
     });
 }
 
+// Функция для обновления аватара пользователя
 function handleUpdateAvatar(event) {
   event.preventDefault(); // предотвращаем перезагрузку страницы
 
@@ -152,10 +158,11 @@ function handleUpdateAvatar(event) {
       console.error("Ошибка при обновлении аватара:", error);
     })
     .finally(() => {
-      renderLoading(false, saveUpdateAvatarButton); // скрываем индикатор загрузки
+      renderLoading(false, saveUpdateAvatarButton);
     });
 }
 
+// Функция для обработки клика по изображению карточки
 function handleImageClick(name, link) {
   popupImageContent.src = link;
   popupImageContent.alt = name; // устанавливаем alt для изображения
@@ -163,12 +170,16 @@ function handleImageClick(name, link) {
   openModal(popupImage);
 }
 
+
+//слушатели событий для форм и кнопок
 formElement.addEventListener("submit", handleProfileFormSubmit);
 addCardForm.addEventListener("submit", handleAddCardSubmit);
 formAvatar.addEventListener("submit", handleUpdateAvatar);
 
-// Закртие попапов по клику на оверлей и кнопки закрытия
 
+
+
+// Закртие попапов по клику на оверлей и кнопки закрытия
 document.querySelectorAll(".popup").forEach((popup) => {
   const closeBtn = popup.querySelector(".popup__close");
   if (closeBtn) {
@@ -182,6 +193,8 @@ document.querySelectorAll(".popup").forEach((popup) => {
 
 // @todo: Вывести карточки и профиль по api на страницу
 
+
+// Получаем начальные карточки и данные пользователя с сервера
 Promise.all([getInitialCards(), getUserInfo()])
   .then(([cards, userData]) => {
     currentUserId = userData._id; // сохраняем userId в переменную
@@ -208,4 +221,6 @@ Promise.all([getInitialCards(), getUserInfo()])
     console.error("Ошибка при загрузке карточек:", error);
   });
 
+
+// Включаем валидацию форм
 enableValidation(configValidation);

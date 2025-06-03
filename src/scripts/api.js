@@ -1,3 +1,6 @@
+// API.js
+
+// конфиг для работы с API
 export const config = {
   baseUrl: "https://nomoreparties.co/v1/wff-cohort-39",
   headers: {
@@ -6,6 +9,9 @@ export const config = {
   },
 };
 
+// Функции для работы с API
+
+// Функция: Получаем список карточек с сервера
 export const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
@@ -19,6 +25,7 @@ export const getInitialCards = () => {
   });
 };
 
+// Функция: Получаем информацию о пользователе с сервера
 export const getUserInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
@@ -32,6 +39,7 @@ export const getUserInfo = () => {
   });
 };
 
+// Функция:  Обновляем информацию о пользователе
 export const setUserInfo = (name, about) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: "PATCH",
@@ -49,6 +57,7 @@ export const setUserInfo = (name, about) => {
   });
 };
 
+// Функция для добавления карточки
 export const addNewCard = (name, link) => {
   return fetch(`${config.baseUrl}/cards`, {
     method: "POST",
@@ -66,6 +75,7 @@ export const addNewCard = (name, link) => {
   });
 };
 
+// Функция для обновления аватара пользователя
 export const updateAvatar = (avatarUrl) => {
   return fetch(`${config.baseUrl}/users/me/avatar`, {
     method: "PATCH",

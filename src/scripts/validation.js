@@ -1,6 +1,7 @@
 // включение валидации вызовом enableValidation
 // все настройки передаются при вызове
 
+// функция для отображения ошибки валидации
 const showInputError = (formElement, inputElement, config) => {
   const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
 
@@ -9,6 +10,7 @@ const showInputError = (formElement, inputElement, config) => {
   errorElement.classList.add(config.errorClass);
 };
 
+// функция скрытия ошибки
 const hideInputError = (formElement, inputElement, config) => {
   const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
 
@@ -17,12 +19,14 @@ const hideInputError = (formElement, inputElement, config) => {
   errorElement.textContent = "";
 };
 
+// функция для проверки наличия невалидных полей
 const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {
     return !inputElement.validity.valid;
   });
 };
 
+// функция для переключения состояния кнопки отправки формы
 const toggleButtonState = (inputList, buttonElement, config) => {
   if (hasInvalidInput(inputList)) {
     buttonElement.classList.add(config.inactiveButtonClass);
@@ -33,6 +37,7 @@ const toggleButtonState = (inputList, buttonElement, config) => {
   }
 };
 
+// функция для проверки валидности ввода
 const checkInputValidity = (formElement, inputElement, config) => {
   const pattern = /^[A-Za-zА-Яа-яЁё\-\s]+$/;
   const isNameField =
@@ -51,6 +56,7 @@ const checkInputValidity = (formElement, inputElement, config) => {
   }
 };
 
+// функция для установки слушателей событий на форму
 const setEventListeners = (formElement, config) => {
   const inputList = Array.from(
     formElement.querySelectorAll(config.inputSelector)
@@ -67,6 +73,7 @@ const setEventListeners = (formElement, config) => {
   });
 };
 
+// функция для включения валидации на всех формах
 const enableValidation = (config) => {
   const formList = Array.from(document.querySelectorAll(config.formSelector));
 
@@ -79,6 +86,7 @@ const enableValidation = (config) => {
   });
 };
 
+// функция для очистки ошибок валидации формы
 const clearValidation = (formElement, config) => {
   const inputList = Array.from(
     formElement.querySelectorAll(config.inputSelector)
