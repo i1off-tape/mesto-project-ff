@@ -91,3 +91,30 @@ export const updateAvatar = (avatarUrl) => {
     return Promise.reject(`Ошибка: ${res.status}`);
   });
 };
+
+export const deleteCardById = (cardId) => {
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: "DELETE",
+    headers: config.headers,
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+
+    return Promise.reject(`Ошибка: ${res.status}`);
+  });
+};
+
+export const changeLikeCardStatus = (cardId, isLiked) => {
+  const method = isLiked ? "DELETE" : "PUT";
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: method,
+    headers: config.headers,
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+
+    return Promise.reject(`Ошибка: ${res.status}`);
+  });
+};

@@ -1,6 +1,6 @@
 // @todo: Функция создания карточки c API
 
-import { config } from "./api.js";
+import { config, deleteCardById, changeLikeCardStatus } from "./api.js";
 
 function createCard(
   cardData,
@@ -48,17 +48,7 @@ function createCard(
 // @todo: Функция удаления карточки c API
 
 function deleteCard(cardElement, cardId) {
-  fetch(`${config.baseUrl}/cards/${cardId}`, {
-    method: "DELETE",
-    headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+  deleteCardById(cardId)
     .then(() => {
       cardElement.remove();
       console.log("Карточка успешно удалена");
@@ -72,18 +62,8 @@ function deleteCard(cardElement, cardId) {
 
 function handleLikeClick(cardData, likeButton, likeCountElement) {
   const isLiked = likeButton.classList.contains("card__like-button_is-active");
-  const method = isLiked ? "DELETE" : "PUT";
 
-  fetch(`${config.baseUrl}/cards/likes/${cardData._id}`, {
-    method: method,
-    headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+  changeLikeCardStatus(cardData._id, isLiked)
     .then((data) => {
       likeButton.classList.toggle("card__like-button_is-active");
       likeCountElement.textContent = data.likes.length;
