@@ -39,16 +39,14 @@ const toggleButtonState = (inputList, buttonElement, config) => {
 
 // функция для проверки валидности ввода
 const checkInputValidity = (formElement, inputElement, config) => {
-  const pattern = /^[A-Za-zА-Яа-яЁё\-\s]+$/;
-  const isNameField =
-    inputElement.name === "name" || inputElement.name === "place-name";
-
-  if (isNameField && !pattern.test(inputElement.value)) {
+  // Проверка на наличие атрибута pattern и его соответствие
+  if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
     inputElement.setCustomValidity("");
   }
 
+  // Проверка валидности поля ввода
   if (!inputElement.validity.valid) {
     showInputError(formElement, inputElement, config);
   } else {
