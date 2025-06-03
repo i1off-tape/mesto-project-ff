@@ -25,6 +25,9 @@ const popupAvatar = document.querySelector(".popup_type_avatar");
 
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
+const saveEditProfileButton = popupEdit.querySelector(".popup__button");
+const saveAddCardButton = popupAddCard.querySelector(".popup__button");
+const saveUpdateAvatarButton = popupAvatar.querySelector(".popup__button");
 
 const formAvatar = document.forms["avatar-form"];
 const formElement = document.forms["edit-profile"];
@@ -74,11 +77,17 @@ profileAvatar.addEventListener("click", () => {
 
 // @todo: функции формы, лайка и вызовы
 
+function renderLoading(isLoading, buttonElement, defaultText = "Сохранить") {
+  buttonElement.textContent = isLoading ? "Сохранение..." : defaultText;
+}
+
 function handleProfileFormSubmit(event) {
   event.preventDefault(); // предотвращаем перезагрузку страницы
 
   const name = nameInput.value;
   const about = jobInput.value;
+
+  renderLoading(true, saveEditProfileButton); // показываем индикатор загрузки
 
   setUserInfo(name, about)
     .then((updatedUser) => {
@@ -88,6 +97,9 @@ function handleProfileFormSubmit(event) {
     })
     .catch((error) => {
       console.error("Ошибка при обновлении профиля:", error);
+    })
+    .finally(() => {
+      renderLoading(false, saveEditProfileButton); // скрываем индикатор загрузки
     });
 }
 
@@ -96,6 +108,8 @@ function handleAddCardSubmit(event) {
 
   const name = cardNameInput.value;
   const link = cardLinkInput.value;
+
+  renderLoading(true, saveAddCardButton);
 
   addNewCard(name, link)
     .then((newCard) => {
@@ -114,6 +128,9 @@ function handleAddCardSubmit(event) {
     })
     .catch((error) => {
       console.error("Ошибка при добавлении карточки:", error);
+    })
+    .finally(() => {
+      renderLoading(false, saveAddCardButton); // скрываем индикатор загрузки
     });
 }
 
@@ -121,6 +138,8 @@ function handleUpdateAvatar(event) {
   event.preventDefault(); // предотвращаем перезагрузку страницы
 
   const avatarLink = formAvatar.elements["avatar"].value;
+
+  renderLoading(true, saveUpdateAvatarButton);
 
   updateAvatar(avatarLink)
     .then((updatedUser) => {
@@ -131,6 +150,9 @@ function handleUpdateAvatar(event) {
     })
     .catch((error) => {
       console.error("Ошибка при обновлении аватара:", error);
+    })
+    .finally(() => {
+      renderLoading(false, saveUpdateAvatarButton); // скрываем индикатор загрузки
     });
 }
 
