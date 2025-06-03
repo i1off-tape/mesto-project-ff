@@ -72,17 +72,15 @@ editButton.addEventListener("click", () => {
 profileAvatar.addEventListener("click", () => {
   clearValidation(formAvatar, configValidation);
   formAvatar.reset();
-  openModal(popupAvatar); /
+  openModal(popupAvatar);
 });
 
 // @todo: функции формы, лайки, вызовы, загрузка и обработка данных
-
 
 // Функция для отображения индикатора загрузки на кнопке
 function renderLoading(isLoading, buttonElement, defaultText = "Сохранить") {
   buttonElement.textContent = isLoading ? "Сохранение..." : defaultText;
 }
-
 
 //функция для обработки отправки формы редактирования профиля
 function handleProfileFormSubmit(event) {
@@ -170,14 +168,10 @@ function handleImageClick(name, link) {
   openModal(popupImage);
 }
 
-
 //слушатели событий для форм и кнопок
 formElement.addEventListener("submit", handleProfileFormSubmit);
 addCardForm.addEventListener("submit", handleAddCardSubmit);
 formAvatar.addEventListener("submit", handleUpdateAvatar);
-
-
-
 
 // Закртие попапов по клику на оверлей и кнопки закрытия
 document.querySelectorAll(".popup").forEach((popup) => {
@@ -192,7 +186,6 @@ document.querySelectorAll(".popup").forEach((popup) => {
 });
 
 // @todo: Вывести карточки и профиль по api на страницу
-
 
 // Получаем начальные карточки и данные пользователя с сервера
 Promise.all([getInitialCards(), getUserInfo()])
@@ -220,7 +213,6 @@ Promise.all([getInitialCards(), getUserInfo()])
   .catch((error) => {
     console.error("Ошибка при загрузке карточек:", error);
   });
-
 
 // Включаем валидацию форм
 enableValidation(configValidation);
