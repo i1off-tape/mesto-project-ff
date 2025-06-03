@@ -1,0 +1,8 @@
+.card__like_area {
+  grid-column: 2 / 3;
+  display: grid;
+  grid-template-rows: auto auto;
+  align-items: center;
+  justify-items: center;
+  gap: 3px;
+}

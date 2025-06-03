@@ -1,6 +1,6 @@
 .card__description {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   background: #fff;
   padding: 25px 20px;

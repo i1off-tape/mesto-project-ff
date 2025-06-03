@@ -1,35 +1,14 @@
-// @todo: Список карточек
-
-const initialCards = [
-  {
-    name: "Архыз",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    name: "Челябинская область",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-  },
-  {
-    name: "Иваново",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-  },
-  {
-    name: "Камчатка",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-  },
-  {
-    name: "Холмогорский район",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-  },
-  {
-    name: "Байкал",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
-  },
-];
-
 // @todo: Функция создания карточки
 
-function createCard(name, link, deleteCard, handleLikeClick, handleImageClick) {
+import { config } from "./api.js";
+
+function createCard(
+  cardData,
+  currentUserId,
+  deleteCard,
+  handleLikeClick,
+  handleImageClick
+) {
   const cardTemplate = document.querySelector("#card-template").content;
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 
@@ -37,21 +16,30 @@ function createCard(name, link, deleteCard, handleLikeClick, handleImageClick) {
   const cardImage = cardElement.querySelector(".card__image");
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
   const cardLikeButton = cardElement.querySelector(".card__like-button");
+  const cardLikeCount = cardElement.querySelector(".card__like-count");
 
-  cardName.textContent = name;
-  cardImage.src = link;
-  cardImage.alt = name; // Дублируем название в alt
+  cardName.textContent = cardData.name;
+  cardImage.src = cardData.link;
+  cardImage.alt = cardData.name; // Дублируем название в alt
+  cardLikeCount.textContent = cardData.likes.length;
 
+  if (cardData.owner._id !== currentUserId) {
+    cardDeleteButton.remove(); // Удаляем кнопку удаления, если карточка не принадлежит текущему пользователю
+  }
+
+  if (cardData.likes.some((like) => like._id === currentUserId)) {
+    cardLikeButton.classList.add("card__like-button_is-active"); // Активируем лайк, если текущий пользователь уже лайкнул карточку
+  }
   cardDeleteButton.addEventListener("click", () => {
-    deleteCard(cardElement);
+    deleteCard(cardElement, cardData._id);
   });
 
   cardLikeButton.addEventListener("click", () => {
-    handleLikeClick(cardLikeButton);
+    handleLikeClick(cardData, cardLikeButton, cardLikeCount);
   });
 
   cardImage.addEventListener("click", () => {
-    handleImageClick(name, link);
+    handleImageClick(cardData.name, cardData.link);
   });
 
   return cardElement;
@@ -59,14 +47,50 @@ function createCard(name, link, deleteCard, handleLikeClick, handleImageClick) {
 
 // @todo: Функция удаления карточки
 
-function deleteCard(cardElement) {
-  cardElement.remove();
+function deleteCard(cardElement, cardId) {
+  fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: "DELETE",
+    headers: config.headers,
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .then(() => {
+      cardElement.remove();
+      console.log("Карточка успешно удалена");
+    })
+    .catch((error) => {
+      console.error("Ошибка при удалении карточки:", error);
+    });
 }
 
 // @todo: Функция обработки клика по лайку
 
-function handleLikeClick(likeButton) {
-  likeButton.classList.toggle("card__like-button_is-active");
+function handleLikeClick(cardData, likeButton, likeCountElement) {
+  const isLiked = likeButton.classList.contains("card__like-button_is-active");
+  const method = isLiked ? "DELETE" : "PUT";
+
+  fetch(`${config.baseUrl}/cards/likes/${cardData._id}`, {
+    method: method,
+    headers: config.headers,
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .then((data) => {
+      likeButton.classList.toggle("card__like-button_is-active");
+      likeCountElement.textContent = data.likes.length;
+    })
+    .catch((error) => {
+      console.error("Ошибка при обработке лайка:", error);
+    });
 }
 
-export { initialCards, createCard, deleteCard, handleLikeClick };
+export { createCard, deleteCard, handleLikeClick };
