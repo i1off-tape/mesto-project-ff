@@ -8,6 +8,7 @@ import {
   handleLikeClick,
 } from "./scripts/cards.js"; // импортируем массив с карточками
 import { openModal, closeModal, handleOverlayClick } from "./scripts/modal.js"; // импортируем функции открытия и закрытия попапов
+import { enableValidation, clearValidation } from "./scripts/validation.js"; // импортируем функцию валидации форм
 
 // @todo: Dom-элементы попапов, список карточек, формы
 
@@ -33,15 +34,27 @@ const cardLinkInput = addCardForm.elements["link"];
 
 const cardAllList = document.querySelector(".places__list");
 
+const configValidation = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+
 // @todo: открытие и закрытие попапов
 
 addButton.addEventListener("click", () => {
+  clearValidation(addCardForm, configValidation); // очищаем ошибки валидации перед открытием попапа
   openModal(popupAddCard);
 });
 
 editButton.addEventListener("click", () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
+
+  clearValidation(formElement, configValidation); // очищаем ошибки валидации перед открытием попапа
 
   openModal(popupEdit);
 });
@@ -110,3 +123,5 @@ initialCards.forEach((item) => {
   );
   cardAllList.append(cardElement);
 });
+
+enableValidation(configValidation);
